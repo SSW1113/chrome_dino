@@ -1,9 +1,11 @@
 const users = [];
 
+// 유저 추가
 export const addUser = (user) => {
   users.push(user);
 };
 
+// 유저 제거
 export const removeUser = (socketId) => {
   const index = users.findIndex((user) => user.socketId === socketId);
   if (index !== -1) {
@@ -11,6 +13,7 @@ export const removeUser = (socketId) => {
   }
 };
 
+// 유저 조회
 export const getUser = () => {
   return users;
 };

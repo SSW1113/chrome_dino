@@ -1,7 +1,11 @@
+import { sendEvent } from './Socket.js';
+import { assets as assetsData } from './Assets.js';
+
 class Score {
   score = 0;
   HIGH_SCORE_KEY = 'highScore';
   stageChange = true;
+  currentStage = 0;
 
   constructor(ctx, scaleRatio) {
     this.ctx = ctx;
@@ -10,11 +14,25 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.001;
-    // 점수가 100점 이상이 될 시 서버에 메세지 전송
-    if (Math.floor(this.score) === 10 && this.stageChange) {
+    const assets = assetsData;
+    this.score += deltaTime * 0.001 * assets.stage.data[this.currentStage].scorePerSecond;
+
+    // 점수가 다음 스테이지에 진입할 만큼 오르면 서버에 메세지 전송 및 스테이지 이동
+    if (
+      Math.floor(this.score) === assets.stage.data[this.currentStage + 1].score &&
+      this.stageChange
+    ) {
+      console.log('Next Stage');
+      sendEvent(11, {
+        currentStage: assets.stage.data[this.currentStage].id,
+        targetStage: assets.stage.data[this.currentStage + 1].id,
+        currentScore: this.score,
+      });
+      this.currentStage++;
+    }
+
+    if (!assets.stage.data[this.currentStage + 1]) {
       this.stageChange = false;
-      sendEvent(11, { currentStage: 1000, targetStage: 1001 });
     }
   }
 

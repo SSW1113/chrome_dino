@@ -2,7 +2,7 @@
 // 유저는 일정 점수가 되면 다음 스테이지로 이동한다. (0점 -> 1스테이지, 100점 -> 2스테이지 ...)
 
 import { getGameAssets } from '../init/assets.js';
-import { setStage } from '../models/stage.model.js';
+import { getStage, setStage } from '../models/stage.model.js';
 
 export const moveStageHandler = (userId, payload) => {
   // 유저의 현재 스테이지 정보
@@ -21,12 +21,19 @@ export const moveStageHandler = (userId, payload) => {
   }
 
   // 점수 검증
-  // 5 -> 임의로 정한 오차범위
   const serverTime = Date.now(); // 현재 타임스탬프
   const elapsedTime = (serverTime - currentStage.timestamp) / 1000;
 
-  // 1 스테이지 -> 2 스테이지
-  if (elapsedTime < 10 || elapsedTime > 10.5) {
+  // 1 스테이지 -> 2 스테이지로 넘어가는 가정
+  // 5 -> 임의로 정한 오차범위
+  // if (elapsedTime < 100 || elapsedTime > 105) {
+  //   return { status: 'fail', message: 'Invalid elapsed time' };
+  // }
+
+  if (
+    elapsedTime < 100 / currentStage.scorePerSecond ||
+    elapsedTime > 100 / currentStage.scorePerSecond + 5
+  ) {
     return { status: 'fail', message: 'Invalid elapsed time' };
   }
 
@@ -38,5 +45,5 @@ export const moveStageHandler = (userId, payload) => {
   }
 
   setStage(userId, payload.targetStage, serverTime);
-  return { status: 'success' };
+  return { status: 'success', message: `Stage moved` };
 };

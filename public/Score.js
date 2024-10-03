@@ -33,6 +33,7 @@ class Score {
 
     if (!assets.stage.data[this.currentStage + 1]) {
       this.stageChange = false;
+      console.log('Last Stage');
     }
   }
 

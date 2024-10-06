@@ -8,8 +8,8 @@ export const getItem = (uuid) => {
   return items[uuid];
 };
 
-export const setItem = (uuid, id, score) => {
-  return items[uuid].push({ id, score });
+export const setItem = (uuid, id, score, earnedStageId, timestamp) => {
+  return items[uuid].push({ id, score, earnedStageId, timestamp });
 };
 
 export const clearItem = (uuid) => {

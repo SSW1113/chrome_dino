@@ -204,7 +204,7 @@ function gameLoop(currentTime) {
     ground.update(gameSpeed, deltaTime);
     // 선인장
     cactiController.update(gameSpeed, deltaTime);
-    itemController.update(gameSpeed, deltaTime);
+    itemController.update(gameSpeed, deltaTime, score.getCurrentStageId());
     // 달리기
     player.update(gameSpeed, deltaTime);
     updateGameSpeed(deltaTime);

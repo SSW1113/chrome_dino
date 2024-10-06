@@ -1,5 +1,5 @@
 import { sendEvent } from './Socket.js';
-import { assets as assetsData } from './Assets.js';
+import { assets, assets as assetsData } from './Assets.js';
 
 class Score {
   score = 0;
@@ -17,11 +17,8 @@ class Score {
     const assets = assetsData;
     this.score += deltaTime * 0.001 * assets.stage.data[this.currentStage].scorePerSecond;
 
-    // 점수가 다음 스테이지에 진입할 만큼 오르면 서버에 메세지 전송 및 스테이지 이동
-    if (
-      Math.floor(this.score) === assets.stage.data[this.currentStage + 1].score &&
-      this.stageChange
-    ) {
+    // 점수가 다음 스테이지에 진입할 만큼 오르면 스테이지 이동
+    if (Math.floor(this.score) > assets.stage.data[this.currentStage].score && this.stageChange) {
       console.log('Next Stage');
       sendEvent(11, {
         currentStage: assets.stage.data[this.currentStage].id,
@@ -31,14 +28,24 @@ class Score {
       this.currentStage++;
     }
 
-    if (!assets.stage.data[this.currentStage + 1]) {
+    if (!assets.stage.data[this.currentStage + 1] && this.stageChange === true) {
       this.stageChange = false;
       console.log('Last Stage');
     }
   }
 
   getItem(itemId) {
-    this.score += 0;
+    const getItem = assetsData.item.data.find((e) => e.id === itemId);
+    sendEvent(12, {
+      currentStage: assetsData.stage.data[this.currentStage].id,
+      itemId: itemId,
+      score: getItem.score,
+    });
+    this.score += getItem.score;
+  }
+
+  getCurrentStageId() {
+    return assets.stage.data[this.currentStage].id;
   }
 
   reset() {

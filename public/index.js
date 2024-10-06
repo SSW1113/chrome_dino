@@ -231,6 +231,7 @@ function gameLoop(currentTime) {
 
   if (gameover) {
     showGameOver();
+    score.currentStage = 0;
   }
 
   if (waitingToStart) {
